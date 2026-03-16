@@ -116,6 +116,14 @@ pipeline {
                 echo 'SonarQube analysis completed!'
             }
         }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                echo 'Application packaged and archived!'
+            }
+        }
     }
 }
 
