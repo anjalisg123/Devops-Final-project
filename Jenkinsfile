@@ -78,6 +78,11 @@ pipeline {
                 }
                 echo 'Integration tests stage completed!'
             }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+                }
+            }
         }
     }
 }
