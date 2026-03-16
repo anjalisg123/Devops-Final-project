@@ -70,6 +70,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Integration Tests') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh 'mvn test -Pintegration-tests'
+                }
+                echo 'Integration tests stage completed!'
+            }
+        }
     }
 }
 
