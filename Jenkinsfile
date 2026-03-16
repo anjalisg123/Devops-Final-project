@@ -101,6 +101,21 @@ pipeline {
                 echo 'Code coverage report published!'
             }
         }
+
+        stage('SAST - SonarQube') {
+            steps {
+                sh '''
+                    mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                    -Dsonar.projectKey=Book-System-Project \
+                    -Dsonar.projectName=Book-System-Project \
+                    -Dsonar.java.binaries=target/classes \
+                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                    -Dsonar.host.url=http://localhost:9000 \
+                    -Dsonar.token=sqp_6f12f5d4346317cf05843784e549054f366bd1fb
+                '''
+                echo 'SonarQube analysis completed!'
+            }
+        }
     }
 }
 
