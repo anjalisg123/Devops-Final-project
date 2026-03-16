@@ -13,9 +13,15 @@ pipeline {
             }
         }
 
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck additionalArguments: '--scan .', odcInstallation: 'default'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+
     }
 }
-
 
 // pipeline {
 //     agent any
