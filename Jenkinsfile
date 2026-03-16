@@ -19,6 +19,29 @@ pipeline {
                 echo 'Build stage completed successfully!'
             }
         }
+        stage('Dependency Scanning') {
+            parallel {
+                stage('OWASP Dependency-Check') {
+                    steps {
+                        sh '''
+                            mvn -B org.owasp:dependency-check-maven:check \
+                            -DfailBuildOnCVSS=9 \
+                            -DnvdApiKey=486ad32f-d3aa-4605-98e5-1753655999cb \
+                            -DdataDirectory="$WORKSPACE/.dc-data" \
+                            -Dformats=HTML,XML
+                        '''
+                        stash name: 'owasp-reports', includes: 'target/dependency-check-report.*'
+                        echo 'OWASP Dependency-Check completed!'
+                    }
+                }
+                stage('Maven Dependency Audit') {
+                    steps {
+                        sh 'mvn versions:display-dependency-updates'
+                        echo 'Maven Dependency Audit completed!'
+                    }
+                }
+            }
+        }
     }
 }
 
