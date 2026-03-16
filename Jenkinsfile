@@ -58,6 +58,18 @@ pipeline {
                 echo 'Dependency-Check results published!'
             }
         }
+
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn test'
+                echo 'Unit tests completed!'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
     }
 }
 
