@@ -84,6 +84,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Code Coverage') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh 'mvn jacoco:report'
+                }
+                publishHTML(target: [
+                    reportName: 'Code Coverage HTML Report',
+                    reportDir: 'target/site/jacoco',
+                    reportFiles: 'index.html',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
+                echo 'Code coverage report published!'
+            }
+        }
     }
 }
 
