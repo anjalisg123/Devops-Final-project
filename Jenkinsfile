@@ -13,6 +13,12 @@ pipeline {
             }
         }
 
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn test -Dtest=*ApplicationTests'
+            }
+        }
+
         stage('OWASP Dependency Check') {
             steps {
                 dependencyCheck additionalArguments: '--scan .', odcInstallation: 'default'
