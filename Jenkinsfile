@@ -42,6 +42,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Publish Dependency-Check Results') {
+            steps {
+                unstash 'owasp-reports'
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                publishHTML(target: [
+                    reportName: 'Dependency Check HTML Report',
+                    reportDir: 'target',
+                    reportFiles: 'dependency-check-report.html',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
+                echo 'Dependency-Check results published!'
+            }
+        }
     }
 }
 
