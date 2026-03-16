@@ -26,7 +26,7 @@ pipeline {
                         sh '''
                             mvn -B org.owasp:dependency-check-maven:check \
                             -DfailBuildOnCVSS=9 \
-                            -DnvdApiKey=486ad32f-d3aa-4605-98e5-1753655999cb \
+                            -DnvdApiKey={NVD_API_KEY} \
                             -DdataDirectory="$WORKSPACE/.dc-data" \
                             -Dformats=HTML,XML
                         '''
@@ -111,7 +111,7 @@ pipeline {
                     -Dsonar.java.binaries=target/classes \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
                     -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.token=sqp_6f12f5d4346317cf05843784e549054f366bd1fb
+                    -Dsonar.token=${SONAR_TOKEN}
                 '''
                 echo 'SonarQube analysis completed!'
             }
@@ -124,132 +124,41 @@ pipeline {
                 echo 'Application packaged and archived!'
             }
         }
+
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        docker build -t ${DOCKER_USER}/book-system:${BUILD_NUMBER} .
+                        docker tag ${DOCKER_USER}/book-system:${BUILD_NUMBER} ${DOCKER_USER}/book-system:latest
+                        echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+                        docker push ${DOCKER_USER}/book-system:${BUILD_NUMBER}
+                        docker push ${DOCKER_USER}/book-system:latest
+                    '''
+                }
+                echo 'Docker image built and pushed!'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+        unstable {
+            echo 'Pipeline completed with UNSTABLE stages.'
+        }
     }
 }
 
 
 
-
-
-
-
-
-
-// pipeline {
-//     agent any
-
-//     tools {
-//         maven 'M3'
-//     }
-
-//     stages {
-
-//         stage('Checkout') {
-//             steps {
-//                 checkout scm
-//             }
-//         }
-
-//         stage('Build') {
-//             steps {
-//                 sh 'mvn clean compile'
-//             }
-//         }
-
-//         stage('Unit Tests') {
-//             steps {
-//                 sh 'mvn test -Dtest=*ApplicationTests'
-//             }
-//             post {
-//                 always {
-//                     junit '**/target/surefire-reports/*.xml'
-//                 }
-//             }
-//         }
-
-//         stage('Integration Tests') {
-//             steps {
-//                 catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-//                     sh 'mvn test -Pintegration-tests'
-//                 }
-//             }
-//         }
-
-//         stage('OWASP Dependency Check') {
-//             steps {
-//                 dependencyCheck additionalArguments: '--scan .', odcInstallation: 'default'
-//                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-//             }
-//         }
-
-//     }
-// }
-
-// // pipeline {
-// //     agent any
-    
-// //     tools {
-// //         maven 'M3'  
-// //         jdk 'OpenJDK 11' 
-// //     }
-    
-// //     stages {
-// //         stage('Checkout') {
-// //             steps {
-// //             }
-// //         }
-        
-// //         stage('Build') {
-// //             steps {
-// //             }
-// //         }
-        
-// //         stage('Dependency Scanning Parallel') {
-// //             parallel {
-              
-// //             }
-// //         }
-// //         stage('Publish Dependency-Check Results') {
-// //             steps {
-               
-// //             }
-// //         }
-// //         stage('Unit Tests') {
-// //             steps {
-// //             }
-// //         }
-        
-// //         stage('Integration Tests') {
-// //             steps {
-// //             }
-// //         }
-        
-// //         stage('Code Coverage') {
-// //             steps {
-             
-// //             }
-// //         }
-        
-// //         stage('SAST - SonarQube') {
-// //             steps {
-// //             }
-// //         }
-        
-// //         stage('Package') {
-// //             steps {
-// //             }
-// //         }
-// //     }
-    
-// //     post {
-// //         success {
-// //             echo 'Pipeline completed successfully!'
-// //         }
-// //         failure {
-// //             echo 'Pipeline failed!'
-// //         }
-// //     }
-// // }
 
 
 
