@@ -13,7 +13,12 @@ pipeline {
                 echo 'Checkout stage completed successfully!'
             }
         }
-        // ... more stages below
+        stage('Build') {
+            steps {
+                sh 'mvn clean compile'
+                echo 'Build stage completed successfully!'
+            }
+        }
     }
 }
 
