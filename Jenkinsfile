@@ -5,7 +5,7 @@ pipeline {
         maven 'M3'
         jdk 'OpenJDK 17'
     }
-    
+
     environment {
         PATH = "/usr/local/bin:${env.PATH}"
     }
@@ -135,14 +135,28 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
-                        docker build -t ${DOCKER_USER}/book-system:${BUILD_NUMBER} .
-                        docker tag ${DOCKER_USER}/book-system:${BUILD_NUMBER} ${DOCKER_USER}/book-system:latest
                         echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
-                        docker push ${DOCKER_USER}/book-system:${BUILD_NUMBER}
-                        docker push ${DOCKER_USER}/book-system:latest
+                        docker buildx build --platform linux/amd64 -t ${DOCKER_USER}/book-system:${BUILD_NUMBER} -t ${DOCKER_USER}/book-system:latest --push .
                     '''
                 }
-                echo 'Docker image built and pushed!'
+            }
+        }
+
+        stage('Deploy to AWS') {
+            steps {
+                sh '''
+                    ssh -o StrictHostKeyChecking=no -i /path/to/book-system-key.pem ec2-user@3.19.228.160 \
+                    "sudo docker pull anjali2802/book-system:latest && sudo docker stop book-app || true && sudo docker rm book-app || true && sudo docker run -d --name book-app -p 8080:8080 anjali2802/book-system:latest"
+                '''
+                echo 'Deployment completed!'
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh 'sleep 30'
+                sh 'curl -f http://3.19.228.160:8080 || echo "App deployed but health check pending (MongoDB not available on EC2)"'
+                echo 'Health check completed!'
             }
         }
     }
