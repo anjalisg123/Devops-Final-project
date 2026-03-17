@@ -23,15 +23,16 @@ pipeline {
             parallel {
                 stage('OWASP Dependency-Check') {
                     steps {
-                        sh '''
-                            mvn -B org.owasp:dependency-check-maven:check \
-                            -DfailBuildOnCVSS=9 \
-                            -DnvdApiKey={NVD_API_KEY} \
-                            -DdataDirectory="$WORKSPACE/.dc-data" \
-                            -Dformats=HTML,XML
-                        '''
+                        withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
+                            sh '''
+                                mvn -B org.owasp:dependency-check-maven:check \
+                                -DfailBuildOnCVSS=9 \
+                                -DnvdApiKey=${NVD_API_KEY} \
+                                -DdataDirectory="$WORKSPACE/.dc-data" \
+                                -Dformats=HTML,XML
+                            '''
+                        }
                         stash name: 'owasp-reports', includes: 'target/dependency-check-report.*'
-                        echo 'OWASP Dependency-Check completed!'
                     }
                 }
                 stage('Maven Dependency Audit') {
@@ -104,16 +105,17 @@ pipeline {
 
         stage('SAST - SonarQube') {
             steps {
-                sh '''
-                    mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-                    -Dsonar.projectKey=Book-System-Project \
-                    -Dsonar.projectName=Book-System-Project \
-                    -Dsonar.java.binaries=target/classes \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-                    -Dsonar.host.url=http://localhost:9000 \
-                    -Dsonar.token=${SONAR_TOKEN}
-                '''
-                echo 'SonarQube analysis completed!'
+                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                    sh '''
+                        mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                        -Dsonar.projectKey=Book-System-Project \
+                        -Dsonar.projectName=Book-System-Project \
+                        -Dsonar.java.binaries=target/classes \
+                        -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.token=${SONAR_TOKEN}
+                    '''
+                }
             }
         }
 
