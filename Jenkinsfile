@@ -6,6 +6,10 @@ pipeline {
         jdk 'OpenJDK 17'
     }
     
+    environment {
+        PATH = "/usr/local/bin:${env.PATH}"
+    }
+    
     stages {
         stage('Checkout') {
             steps {
