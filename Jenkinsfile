@@ -145,7 +145,7 @@ pipeline {
         stage('Deploy to AWS') {
             steps {
                 sh '''
-                    ssh -o StrictHostKeyChecking=no -i /path/to/book-system-key.pem ec2-user@3.19.228.160 \
+                    ssh -o StrictHostKeyChecking=no -i /Users/anjali/.jenkins/book-system-key.pem ec2-user@3.19.228.160 \
                     "sudo docker pull anjali2802/book-system:latest && sudo docker stop book-app || true && sudo docker rm book-app || true && sudo docker run -d --name book-app -p 8080:8080 anjali2802/book-system:latest"
                 '''
                 echo 'Deployment completed!'
