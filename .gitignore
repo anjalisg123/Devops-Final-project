@@ -21,4 +21,8 @@ test-results.xml
 .talismanrc
 
 # Other
-solar-system.png
+solar-system.png.terraform/
+terraform/.terraform/
+*.tfstate
+*.tfstate.backup
+terraform.tfvars
