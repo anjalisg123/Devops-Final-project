@@ -78,7 +78,9 @@ Two parallel stages:
 ### Stage D — Publish Dependency-Check Results
 Unstashes OWASP reports and publishes them via `dependencyCheckPublisher` (XML) and `publishHTML` (HTML report).
 ![Stage D](./screenshots/Stage_D.png)
+
 ![Stage D](./screenshots/Stage_D2.png)
+
 ![Stage D](./screenshots/Stage_D3.png)
 
 
@@ -163,6 +165,7 @@ A threshold of 7 is more conservative — it catches High-severity vulnerabiliti
 
 The initial `mvn test` run failed because integration tests (`TextbookLibraryIntegrationTests`) were included in the default test execution. The integration test requires Docker (Testcontainers) which was not accessible, causing an `IllegalState: Could not find a valid Docker environment` error. After configuring the Surefire plugin to exclude `**/*IntegrationTests.java`, `mvn test` passed successfully with 6 unit tests, 0 failures.
 ![Stage F](./screenshots/Stage_F2.png)
+
 ![Stage F](./screenshots/Stage_F3.png)
 
 ### Stage E.2 — Why do we exclude integration tests?
