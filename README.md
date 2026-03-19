@@ -100,6 +100,7 @@ Runs `mvn jacoco:report` and publishes the HTML coverage report from `target/sit
 ### Stage H — SAST (SonarQube)
 Runs Maven Sonar analysis with JaCoCo coverage data. Uses `withCredentials` to securely reference the SonarQube token stored in Jenkins credentials.
 ![Stage H](./screenshots/Stage_H.png)
+![Stage H](./screenshots/Stage_H2.png)
 
 ### Stage I — Package + Artifact
 Runs `mvn package -DskipTests` and archives `target/*.jar` as a Jenkins artifact.
