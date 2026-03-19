@@ -123,9 +123,24 @@ Waits 30 seconds and sends a curl request to the deployed application to verify 
 ![Terraform](./screenshots/Terraform-output.webp)
 
 ### EC2 instance
-![EC2](./screenshots/EC2.webp)
+![EC2](./screenshots/EC2.png)
+
+### Deployment Verification
+![Deploy](./screenshots/actuator.png)
+
+![Deploy](./screenshots/browser.png)
+
+![Deploy](./screenshots/live.png)
+
+![Deploy](./screenshots/Ready.png)
+
+![Deploy](./screenshots/postman.png)
+
+![Deploy](./screenshots/os.png)
 
 ### Containerization & Registry Evidence
+![Deploy](./screenshots/Image_pull.png)
+
 ![Deploy](./screenshots/Deploy2.png)
 
 ![Deploy](./screenshots/Deploy3.png)
