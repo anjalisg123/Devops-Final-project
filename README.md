@@ -95,6 +95,7 @@ Runs `mvn test -Pintegration-tests` using a Maven profile that includes only int
 ### Stage G — Code Coverage
 Runs `mvn jacoco:report` and publishes the HTML coverage report from `target/site/jacoco/index.html`. Wrapped in `catchError` to avoid blocking later stages.
 ![Stage G](./screenshots/Stage_G.png)
+![Stage G](./screenshots/code_coverage.png)
 
 ### Stage H — SAST (SonarQube)
 Runs Maven Sonar analysis with JaCoCo coverage data. Uses `withCredentials` to securely reference the SonarQube token stored in Jenkins credentials.
@@ -103,6 +104,7 @@ Runs Maven Sonar analysis with JaCoCo coverage data. Uses `withCredentials` to s
 ### Stage I — Package + Artifact
 Runs `mvn package -DskipTests` and archives `target/*.jar` as a Jenkins artifact.
 ![Stage I](./screenshots/Stage_I.png)
+![Stage I](./screenshots/Archived_artifact.png)
 
 ### Docker Build & Push
 Builds a multi-platform (linux/amd64) Docker image and pushes it to DockerHub with both build number and `latest` tags.
@@ -115,6 +117,21 @@ SSHs into the EC2 instance and pulls/runs the latest Docker image.
 ### Health Check
 Waits 30 seconds and sends a curl request to the deployed application to verify it is running.
 ![Health Check](./screenshots/Deploy.png)
+
+### Infrastructure Provisioning - Terraform Output
+![Terraform](./screenshots/Terraform-output.webp)
+
+### EC2 instance
+![EC2](./screenshots/EC2.webp)
+
+### Containerization & Registry Evidence
+![Deploy](./screenshots/Deploy2.png)
+
+![Deploy](./screenshots/Deploy3.png)
+
+![Deploy](./screenshots/Deploy4.png)
+
+![Deploy](./screenshots/Deploy5.png)
 
 ---
 
