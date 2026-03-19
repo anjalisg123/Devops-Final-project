@@ -139,6 +139,8 @@ Waits 30 seconds and sends a curl request to the deployed application to verify 
 ![Deploy](./screenshots/os.png)
 
 ### Containerization & Registry Evidence
+![Deploy](./screenshots/Docker_image.png)
+
 ![Deploy](./screenshots/Image_pull.png)
 
 ![Deploy](./screenshots/Deploy2.png)
