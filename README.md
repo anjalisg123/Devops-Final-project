@@ -1,7 +1,5 @@
 **Author:** Anjali Gudimani  
 
-**Repo link:** https://github.com/SE441-lab/lab5-anjalisg123
-
 **Student Id:** 2214735
 
 **Course:** SE 441 — DevOps  
